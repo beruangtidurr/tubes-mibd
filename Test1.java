@@ -527,11 +527,25 @@ public class Test1 {
         System.out.println("1. Harian");
         System.out.println("2. Mingguan");
         System.out.println("3. Bulanan");
+        System.out.println("0. Semua (tanpa filter tanggal)");
         int pilihan = scanner.nextInt();
         scanner.nextLine();
 
-        System.out.print("Masukkan tanggal acuan (yyyy-mm-dd): ");
-        LocalDate tanggal = LocalDate.parse(scanner.nextLine());
+        LocalDate tanggal = null;
+        if (pilihan != 0) {
+            System.out.print("Masukkan tanggal acuan (yyyy-mm-dd): ");
+            String tanggalInput = scanner.nextLine();
+            if (!tanggalInput.isBlank()) {
+                try {
+                    tanggal = LocalDate.parse(tanggalInput);
+                } catch (Exception e) {
+                    System.out.println("Format tanggal tidak valid, menampilkan semua data.");
+                    pilihan = 0;
+                }
+            } else {
+                pilihan = 0;
+            }
+        }
 
         try {
             String query = "SELECT i.*, w.date, w.volume FROM IoTDevice i " +
@@ -576,7 +590,12 @@ public class Test1 {
 
             for (IoTDevice device : devices.values()) {
                 List<WaterUsageLog> logs = deviceLogs.get(device.sn);
-                List<WaterUsageLog> filteredLogs = filterLogs(logs, pilihan, tanggal);
+                List<WaterUsageLog> filteredLogs;
+                if (pilihan == 0) {
+                    filteredLogs = logs;
+                } else {
+                    filteredLogs = filterLogs(logs, pilihan, tanggal);
+                }
                 double total = filteredLogs.stream().mapToDouble(l -> l.volume).sum();
 
                 System.out.printf("%s | SN: %s | Total Air: %.2fL | Status: %s\n",
