@@ -47,3 +47,9 @@ SELECT * FROM Sarusun
 SELECT * FROM WaterUsageLog
 
 DROP TABLE Users
+
+SET IDENTITY_INSERT WaterUsageLog ON;
+
+INSERT INTO WaterUsageLog (id, sn, date, volume) VALUES (1, 'SN001', '2025-06-05', 10);
+INSERT INTO WaterUsageLog (id, sn, date, volume) VALUES (2, 'SN002', '2025-06-05', 25.4);
+INSERT INTO WaterUsageLog (id, sn, date, volume) VALUES (3, 'SN002', '2025-06-05', 12.3);
